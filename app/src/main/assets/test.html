@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>js调用android原生代码</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=gb2312">
+    <meta id="viewport" name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,minimal-ui">
+</head>
+<body>
+<br/>
+<li><a onclick="window.activity.showToast('Hello from JavaScript');">点击调用Toast</a></li>
+<li><a onclick="toast(100)">点击获取MSG</a></li>
+<br/>
+<br/>
+</body>
+</html>
+
+<script>
+    function toast(duration){
+    msg=window.activity.getMsg();
+        duration=isNaN(duration)?3000:duration;
+        var m = document.createElement('div');
+        m.innerHTML = msg;
+        m.style.cssText="width: 60%;min-width: 150px;opacity: 0.7;height: 30px;color: rgb(255, 255, 255);line-height: 30px;text-align: center;border-radius: 5px;position: fixed;top: 40%;left: 20%;z-index: 999999;background: rgb(0, 0, 0);font-size: 12px;";
+        document.body.appendChild(m);
+        setTimeout(function() {
+            var d = 0.5;
+            m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
+            m.style.opacity = '0';
+            setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+        }, duration);
+    }
+</script>
