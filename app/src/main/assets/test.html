@@ -8,16 +8,15 @@
 <body>
 <br/>
 <li><a onclick="window.activity.showToast('Hello from JavaScript');">点击调用Toast</a></li>
-<li><a onclick="toast(100)">点击获取MSG</a></li>
+<li><a onclick="toast(window.activity.getMsg(),100)">点击获取MSG</a></li>
 <br/>
+<img width="130px" height="200px" src="https://img.gsdlcn.com/uploads/190220/1-1Z2201Z302340.jpg">
 <br/>
 </body>
 </html>
 
 <script>
-    function toast(duration){
-    <!--在这里获取返回值-->
-        var msg=window.activity.getMsg();
+    function toast(msg,duration){
         duration=isNaN(duration)?3000:duration;
         var m = document.createElement('div');
         m.innerHTML = msg;
@@ -29,5 +28,11 @@
             m.style.opacity = '0';
             setTimeout(function() { document.body.removeChild(m) }, d * 1000);
         }, duration);
+    }
+</script>
+
+<script>
+    function getMsg(){
+        return "Hello from JavaScript";
     }
 </script>
