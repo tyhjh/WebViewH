@@ -16,7 +16,8 @@
 
 <script>
     function toast(duration){
-    msg=window.activity.getMsg();
+    <!--在这里获取返回值-->
+        var msg=window.activity.getMsg();
         duration=isNaN(duration)?3000:duration;
         var m = document.createElement('div');
         m.innerHTML = msg;
