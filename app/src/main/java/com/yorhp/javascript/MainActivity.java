@@ -10,11 +10,14 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 /**
+ * 原生的调用方式
+ *
  * @author yorhp
  */
 public class MainActivity extends AppCompatActivity {
 
     WebView webView;
+
 
     /**
      * 这段js函数的功能是，遍历所有的img节点，并添加onclick函数，

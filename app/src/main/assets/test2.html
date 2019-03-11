@@ -1,0 +1,76 @@
+<html>
+<head>
+    <title>js调用android原生代码</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=gb2312">
+    <meta id="viewport" name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,minimal-ui">
+</head>
+<body>
+<br/>
+<li><a onclick="test()">点击调用Android的方法</a></li>
+<br/>
+<img width="130px" height="200px" src="https://img.gsdlcn.com/uploads/190220/1-1Z2201Z302340.jpg">
+<br/>
+<p>
+    <input type="file" value="打开文件" />
+</p>
+
+</body>
+<script>
+        function connectWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                callback(WebViewJavascriptBridge)
+            } else {
+                document.addEventListener(
+                    'WebViewJavascriptBridgeReady'
+                    , function() {
+                        callback(WebViewJavascriptBridge)
+                    },
+                    false
+                );
+            }
+        }
+        connectWebViewJavascriptBridge(function(bridge) {
+            bridge.registerHandler("functionInJs", function(data, responseCallback) {
+                toast(data,1000)
+                if (responseCallback) {
+                    var responseData = "JavaScript方法执行完成";
+                    responseCallback(responseData);
+                }
+            });
+        })
+</script>
+</html>
+
+
+<script>
+  function test(){
+  window.WebViewJavascriptBridge.callHandler(
+       'submitFromWeb'
+        , {'data': 'Hello form JavaScript'}
+        , function(responseData) {
+            toast(responseData,1000)
+        }
+    );
+  }
+
+</script>
+
+<script>
+    function toast(msg,duration){
+        duration=isNaN(duration)?3000:duration;
+        var m = document.createElement('div');
+        m.innerHTML = msg;
+        m.style.cssText="width: 60%;min-width: 150px;opacity: 0.7;height: 30px;color: rgb(255, 255, 255);line-height: 30px;text-align: center;border-radius: 5px;position: fixed;top: 40%;left: 20%;z-index: 999999;background: rgb(0, 0, 0);font-size: 12px;";
+        document.body.appendChild(m);
+        setTimeout(function() {
+            var d = 0.5;
+            m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
+            m.style.opacity = '0';
+            setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+        }, duration);
+    }
+
+
+
+</script>
