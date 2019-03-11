@@ -1,10 +1,14 @@
 package com.yorhp.javascript;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -17,7 +21,8 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     WebView webView;
-
+    ValueCallback<Uri[]> mUploadMessageArray;
+    int RESULT_CODE = 0;
 
     /**
      * 这段js函数的功能是，遍历所有的img节点，并添加onclick函数，
@@ -55,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 webView.loadUrl(GET_IMAGE_URL);
-
-
                 webView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -71,11 +74,19 @@ public class MainActivity extends AppCompatActivity {
                         return false;
                     }
                 });
-
-
             }
         });
 
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                mUploadMessageArray = filePathCallback;
+                Intent chooserIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                chooserIntent.setType("image/*");
+                startActivityForResult(chooserIntent, RESULT_CODE);
+                return true;
+            }
+        });
     }
 
 
@@ -110,4 +121,14 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, imgUrl, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == RESULT_CODE) {
+            if (mUploadMessageArray != null) {
+                Uri result = (data == null || resultCode != RESULT_OK ? null : data.getData());
+                mUploadMessageArray.onReceiveValue(new Uri[]{result});
+                mUploadMessageArray = null;
+            }
+        }
+    }
 }
