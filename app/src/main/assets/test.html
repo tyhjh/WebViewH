@@ -9,14 +9,49 @@
 <br/>
 <li><a onclick="window.activity.showToast('Hello from JavaScript');">点击调用Toast</a></li>
 <li><a onclick="toast(window.activity.getMsg(),100)">点击获取MSG</a></li>
+<li><a onclick="callAndroid()">点击测试拦截URL</a></li>
+<li><a onclick="alert('alert测试')">点击测alert</a></li>
+<li><a onclick="showPrompt()">点击测prompt</a></li>
+<li><a onclick="showConfirm()">点击测confirm</a></li>
+
+
 <br/>
 <img width="130px" height="200px" src="https://img.gsdlcn.com/uploads/190220/1-1Z2201Z302340.jpg">
 <br/>
+<p id="demo"></p>
 <p>
     <input type="file" value="打开文件" />
 </p>
 </body>
 </html>
+
+<script>
+    function callAndroid(){
+            <!--约定的url协议为：js://webview?name=Tyhj-->
+            document.location = "js://webview?name=Tyhj";
+         }
+</script>
+
+<script>
+    function showPrompt() {
+        var person = prompt("Please enter your name", "Harry Potter");
+        if (person != null) {
+        document.getElementById("demo").innerHTML =
+        "Hello " + person + "! How are you today?";
+        }
+    }
+</script>
+<script>
+    function showConfirm(){
+        var r=confirm("Press a button!");
+        if(r==true){
+            document.getElementById("demo").innerHTML ="you choose yes";
+        }else{
+             document.getElementById("demo").innerHTML ="you choose no";
+        }
+    }
+</script>
+
 
 <script>
     function toast(msg,duration){

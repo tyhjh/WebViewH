@@ -7,8 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -23,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     WebView webView;
     ValueCallback<Uri[]> mUploadMessageArray;
     int RESULT_CODE = 0;
+    public static final String URL_SCHEME = "js";
+    public static final String URL_AUTHORITY = "webview";
 
     /**
      * 这段js函数的功能是，遍历所有的img节点，并添加onclick函数，
@@ -42,9 +47,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         webView = findViewById(R.id.wbView);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         webView.loadUrl("file:///android_asset/test.html");
         webView.addJavascriptInterface(MainActivity.this, "activity");
         webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Uri uri = request.getUrl();
+                //判断协议，约定的url协议为：js://webview?name=Tyhj
+                if (URL_SCHEME.equals(uri.getScheme()) && URL_AUTHORITY.equals(uri.getAuthority())) {
+                    String name = uri.getQueryParameter("name");
+                    Toast.makeText(MainActivity.this, "JavaScript通过拦截调用Android代码" + name, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return super.shouldOverrideUrlLoading(view, request);
+            }
+
             @Override
             public void onPageFinished(WebView view, String url) {
                 String msg = "呵呵呵";
@@ -79,6 +97,29 @@ public class MainActivity extends AppCompatActivity {
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
+            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+                Toast.makeText(MainActivity.this, "onJsAlert：" + message, Toast.LENGTH_SHORT).show();
+                result.confirm();
+                return true;
+            }
+
+            @Override
+            public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+                Toast.makeText(MainActivity.this, "onJsConfirm：" + message, Toast.LENGTH_SHORT).show();
+                result.cancel();
+                return true;
+            }
+
+            @Override
+            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+                Toast.makeText(MainActivity.this, "onJsPrompt：" + message, Toast.LENGTH_SHORT).show();
+                result.confirm("Tyhj");
+                return true;
+            }
+        });
+
+        /*webView.setWebChromeClient(new WebChromeClient() {
+            @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
                 mUploadMessageArray = filePathCallback;
                 Intent chooserIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -86,7 +127,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(chooserIntent, RESULT_CODE);
                 return true;
             }
-        });
+        });*/
+
+
     }
 
 
