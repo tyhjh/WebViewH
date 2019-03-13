@@ -4,6 +4,10 @@
 
 ---
 
+推荐阅读原文
+>* https://www.jianshu.com/p/c1aa16129d26
+>* https://www.jianshu.com/p/4ed80af1c103
+
 之前有写过WebView的小demo，之后一直没有在项目中使用过网页开发，最近准备重新再看一下，记录一些基本的使用方法
 
 > 相关链接：[Android使用JsBridge与JavaScript交互](https://www.jianshu.com/p/4ed80af1c103)
